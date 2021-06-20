@@ -11,9 +11,24 @@ public class FrameContents extends JPanel {
 	
 	JTextField passwordContainer = new JTextField();
 	
+	JComboBox<Integer> passwordLength = new JComboBox<Integer>();
+	
+	int[] a = new int[10];
+	
 	public FrameContents() {
 		setFrameContents();
+		addComboBoxItems();
 	} 
+	
+	public void addComboBoxItems() {
+		
+		for (int i = 0; i < 10; i++) {
+			passwordLength.addItem(i);
+			a[i] = i;
+		}
+		
+		passwordContainer.setText(Integer.toString(a.length));
+	}
 	
 	public void setFrameContents() {
 		
@@ -25,8 +40,7 @@ public class FrameContents extends JPanel {
 		
 		this.add(passwordContainer);
 		
-		passwordContainer.setBounds(50, MIDDLE, 200, 30);
-		title.setBounds(50, MIDDLE, 1000, 100);
-
+		title.setBounds(30, 1, 1000, 100);
+		passwordContainer.setBounds(30, 300, 200, 30);
 	}
 }
