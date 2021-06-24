@@ -14,7 +14,7 @@ public class MainWindow extends JFrame{
 	public static void main(String[] args) {
 
         window.add(contents);               
-		window.setBounds(10, 10, 300, 400);
+		window.setBounds(10, 10, 300, 350);
 		window.setVisible(true);
 		window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
