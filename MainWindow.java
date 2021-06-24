@@ -1,6 +1,5 @@
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
+
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -18,5 +17,6 @@ public class MainWindow extends JFrame{
 		window.setVisible(true);
 		window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setBackground(backColour);
 	}
 }
