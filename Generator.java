@@ -17,6 +17,7 @@ public class Generator {
                                  boolean includeEasyInput,
                                  int passwordLength) {
 
+        //clear the string builder
         password.delete(0, password.length());
 
         switch (determinePasswordAnatomy(
@@ -25,27 +26,48 @@ public class Generator {
                 includeSpecialCharacters,
                 includeEasyInput)){
 
-            case "UppercaseOnly":
+            case "Upper":
+                generatePassword(passwordLength, UPPERCASELETTERS);
+                break;
 
-                for(int i = 0; i <= passwordLength - 1; i++) {
-                    password.append(getRandomChar(passwordLength, UPPERCASELETTERS));
-                }
+            case "Lower":
+                generatePassword(passwordLength, LOWERCASELETTERS);
+                break;
+
+            case "UpperLower":
+                generatePassword(passwordLength, concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS));
                 break;
         }
     }
 
+    char[] concatenatePools(char[] pool1, char[] pool2){
+
+        StringBuilder newPool = new StringBuilder();
+        newPool.append(UPPERCASELETTERS);
+        newPool.append(LOWERCASELETTERS);
+        return newPool.toString().toCharArray();
+    }
+    void generatePassword(int length, char[] charPool){
+
+        for(int i = 0; i <= length - 1; i++) {
+            password.append(getRandomChar(length, charPool));
+        }
+
+    }
+    //returns the password stringbuilder
     public String getPassword(){
         return password.toString();
     }
 
-    int getRandomInt(char[] charPool){
-        return random.nextInt(charPool.length);
+    //
+    int getRandomInt(int max){
+        return random.nextInt(max);
     }
 
     char getRandomChar(int passwordLength, char[] charPool){
 
         for(int i = 0; i < passwordLength - 1; i++) {
-            return charPool[getRandomInt(charPool)];
+            return charPool[getRandomInt(charPool.length)];
         }
 
         return '0';
@@ -55,32 +77,37 @@ public class Generator {
                                            boolean includeSpecialCharacters,
                                            boolean includeEasyInput){
 
+        StringBuilder passwordAttributes = new StringBuilder();
 
         for(int i = 0; i < FrameContents.checkBoxes.length; i++){
+            //0 upper
+            //1 lower
+            //2 symbols
+            //3 easy
 
-        s
+            if(FrameContents.checkBoxes[i].isSelected()){
+
+                switch (i){
+
+                    case 0:
+                        passwordAttributes.append("Upper");
+                        break;
+
+                    case 1:
+                        passwordAttributes.append("Lower");
+                        break;
+
+                    case 2:
+
+                    case 3:
+
+                        break;
+                }
+
+            }
         }
 
-        if (includeUppercaseLetters){
-            return "UppercaseOnly";
-        }else if (includeUppercaseLetters && includeLowercaseLetters){
-            return "UpperAndLowerCaseOnly";
-        }else if(includeUppercaseLetters && includeLowercaseLetters){
-            return "UppercaseAndLowercaseOnly";
-        }else if(includeUppercaseLetters && includeEasyInput) {
-            return "UppercaseAndEasyOnly";
-        }else if (includeUppercaseLetters && includeLowercaseLetters && includeSpecialCharacters){
-            return "UpperAndLowerAndSpecialOnly";
-        } else if (includeUppercaseLetters && includeLowercaseLetters && includeSpecialCharacters && includeEasyInput){
-            return "UpperAndLowerAndSpecialAndEasyInputOnly";
-        }else if(includeLowercaseLetters){
-            return "LowerCaseOnly";
-        }else if(includeLowercaseLetters && includeSpecialCharacters){
-            return "LowerCaseAndSpecialOnly";
-        }else if(includeSpecialCharacters && includeEasyInput){
-            return "SpecialAndEasyOnly";
-        }
+        return passwordAttributes.toString();
 
-        return null;
     }
 }

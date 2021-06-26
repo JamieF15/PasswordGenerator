@@ -9,6 +9,7 @@ import java.awt.datatransfer.Clipboard;
 
 public class FrameContents extends JPanel {
 
+	JLabel[] labels;
 	//contains the logic to generate password
 	public static Generator generator = new Generator();
 
@@ -54,6 +55,9 @@ public class FrameContents extends JPanel {
 		addComboBoxItems();
 	} 
 
+	void addLabelsToArray(){
+		labels = new JLabel[]{includeNumbersPrompt};
+	}
 	//adds the items numbers for password length to the combo box
 	public void addComboBoxItems() {
 
@@ -117,6 +121,7 @@ public class FrameContents extends JPanel {
 		this.add(includeEasyInput);
 		this.add(easyInputInfo);
 		this.add(questionMark);
+		this.add(includeNumbersPrompt);
 
 		checkBoxes = new JCheckBox[]{includeUppercaseLetters,
 									includeLowercaseLetters,
@@ -144,13 +149,13 @@ public class FrameContents extends JPanel {
 		includeEasyInput.setBounds(235, 185, 20, 20);
 		includeEasyInputPasswordPrompt.setBounds(35, 95, 1000, 200);
 
-		generatePassword.setBounds(30, 220, 230, 20);
+		generatePassword.setBounds(30, 275, 230, 20);
 	
 		checkForImage();
 		
-		copyPassword.setBounds(230, 250, 30, 35);
+		copyPassword.setBounds(230, 300, 30, 35);
 
-		passwordContainer.setBounds(30, 260, 190, 20);
+		passwordContainer.setBounds(30, 310, 190, 20);
 
 		questionMark.setBounds(10, 185, 20, 20);
 		//questionMark.setVisible(true);
@@ -204,10 +209,8 @@ public class FrameContents extends JPanel {
 
 		for(int i = 0; i < checkBoxes.length; i++){
 
-			if(checkBoxes[i].isSelected()){
+			if(checkBoxes[i].isSelected()) {
 				return true;
-			}else{
-				return false;
 			}
 		}
 			return false;
