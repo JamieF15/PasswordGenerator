@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 
 public class MainWindow extends JFrame{
 
-	static Color backColour = new Color(0, 100, 0);
+	static Color backColour = new Color(100, 100, 200);
 	static MainWindow window = new MainWindow();
 	static FrameContents contents = new FrameContents();
 	

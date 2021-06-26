@@ -9,11 +9,11 @@ import java.awt.datatransfer.Clipboard;
 
 public class FrameContents extends JPanel {
 
-	JLabel[] labels;
 	//contains the logic to generate password
 	public static Generator generator = new Generator();
 
-	public static JCheckBox[] checkBoxes;
+	private static JCheckBox[] checkBoxes;
+	private static JLabel[] labels;
 
 	//represents the middle of the window as it is not resizable
 	public final int MIDDLE = 200;
@@ -22,7 +22,7 @@ public class FrameContents extends JPanel {
 	public final int DEFAULTPASSWORDLENGTH = 16;
 
 	//represents the max password length
-	public final int MAXPASSWORDLENGTH = 22;
+	public final int MAXPASSWORDLENGTH = 31;
 
 	JLabel title = new JLabel("Password Generator");
 	JLabel lengthPrompt = new JLabel("Password length: ");
@@ -47,17 +47,23 @@ public class FrameContents extends JPanel {
 	JCheckBox includeUppercaseLetters = new JCheckBox();	
 	JCheckBox includeLowercaseLetters = new JCheckBox();
 	JCheckBox includeSymbols = new JCheckBox();
+	JCheckBox includeNumbers = new JCheckBox();
 	JCheckBox includeEasyInput = new JCheckBox();
 
 	public FrameContents() {
 		this.setLayout(null);
 		setPanelContents();
 		addComboBoxItems();
-	} 
-
-	void addLabelsToArray(){
-		labels = new JLabel[]{includeNumbersPrompt};
 	}
+
+	public static JLabel[] getLabels(){
+		return  labels;
+	}
+
+	public static JCheckBox[] getCheckBoxes(){
+		return checkBoxes;
+	}
+
 	//adds the items numbers for password length to the combo box
 	public void addComboBoxItems() {
 
@@ -78,10 +84,10 @@ public class FrameContents extends JPanel {
 		addListeners();
 
 		setFonts();
-		
+
 		addItemsToPanel();
-		
-		setItemBounds();
+
+		setLabels();
 	}
 	
 	//sets the fonts for the text in the UI
@@ -122,48 +128,55 @@ public class FrameContents extends JPanel {
 		this.add(easyInputInfo);
 		this.add(questionMark);
 		this.add(includeNumbersPrompt);
+		this.add(includeNumbers);
 
 		checkBoxes = new JCheckBox[]{includeUppercaseLetters,
 									includeLowercaseLetters,
-									includeEasyInput,
-									includeSymbols};
+									includeSymbols,
+									includeNumbers,
+									includeEasyInput};
+
+		labels = new JLabel[]{lengthPrompt,
+				includeUppercaseLettersPrompt,
+				includeLowercaseLettersPrompt,
+				includeSymbolsPrompt,
+				includeNumbersPrompt,
+				includeEasyInputPasswordPrompt};
 	}
 
-	//this method sets the position and sizes for each UI element in the interface
-	void setItemBounds(){
-		
+	void setLabels(){
+
+		int positionOffset = 0;
+		int distanceDifference = 30;
+
 		title.setBounds(30, 1, 1000, 30);
-		
-		passwordLengthBox.setBounds(165, 55, 70, 20);
-		lengthPrompt.setBounds(35, 50, 1000, 30);	
-		
-		includeUppercaseLetters.setBounds(235, 95, 20, 20);
-		includeUppercaseLettersPrompt.setBounds(35, 80, 1000, 50);
-
-		includeLowercaseLetters.setBounds(235, 125, 20, 20);
-		includeLowercaseLettersPrompt.setBounds(35, 85, 1000, 100);
-		
-		includeSymbols.setBounds(235, 155, 20 , 20);
-		includeSymbolsPrompt.setBounds(35, 90, 1000, 150);
-
-		includeEasyInput.setBounds(235, 185, 20, 20);
-		includeEasyInputPasswordPrompt.setBounds(35, 95, 1000, 200);
-
-		generatePassword.setBounds(30, 275, 230, 20);
-	
-		checkForImage();
-		
+		questionMark.setBounds(10, 205, 20, 20);
 		copyPassword.setBounds(230, 300, 30, 35);
-
 		passwordContainer.setBounds(30, 310, 190, 20);
+		generatePassword.setBounds(30, 275, 230, 20);
+		passwordLengthBox.setBounds(160, 55, 50, 20);
 
-		questionMark.setBounds(10, 185, 20, 20);
-		//questionMark.setVisible(true);
-		//set the check boxes to true by default
+		for(int i = 0; i < labels.length; i++){
+
+			labels[i].setBounds(35, 50 + positionOffset, 1000, 30);
+			positionOffset += distanceDifference;
+		}
+
+		positionOffset = 0;
+
+		for(int i = 0; i < checkBoxes.length; i++){
+
+			checkBoxes[i].setBounds(230, 85 + positionOffset, 20, 20);
+			positionOffset += distanceDifference;
+		}
+
+		checkForImage();
+
 		includeUppercaseLetters.setSelected(true);
 		includeLowercaseLetters.setSelected(true);
 		includeSymbols.setSelected(true);
-		includeEasyInput.setSelected(false);
+		includeEasyInput.setSelected(true);
+		includeNumbers.setSelected(true);
 	}
 
 	//adds listeners to the buttons in within UI
@@ -190,11 +203,7 @@ public class FrameContents extends JPanel {
 				if(checkIfABoxIsChecked()) {
 					passwordContainer.setText(null);
 
-					generator.generatePassword(includeUppercaseLetters.isSelected(),
-							includeLowercaseLetters.isSelected(),
-							includeSymbols.isSelected(),
-							includeEasyInput.isSelected(),
-							(Integer) passwordLengthBox.getSelectedItem());
+					generator.generatePassword((Integer) passwordLengthBox.getSelectedItem());
 
 					passwordContainer.setText(generator.getPassword());
 				}else{
