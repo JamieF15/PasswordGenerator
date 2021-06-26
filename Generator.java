@@ -27,8 +27,8 @@ public class Generator {
 
             case "UppercaseOnly":
 
-                for(int i = 0; i <= passwordLength; i++) {
-                    password.append(getRandomUppercaseLetter(passwordLength));
+                for(int i = 0; i <= passwordLength - 1; i++) {
+                    password.append(getRandomChar(passwordLength, UPPERCASELETTERS));
                 }
                 break;
         }
@@ -38,10 +38,14 @@ public class Generator {
         return password.toString();
     }
 
-    char getRandomUppercaseLetter(int passwordLength){
+    int getRandomInt(char[] charPool){
+        return random.nextInt(charPool.length);
+    }
 
-        for(int i = 0; i < passwordLength; i++) {
-            return UPPERCASELETTERS[random.nextInt(UPPERCASELETTERS.length)];
+    char getRandomChar(int passwordLength, char[] charPool){
+
+        for(int i = 0; i < passwordLength - 1; i++) {
+            return charPool[getRandomInt(charPool)];
         }
 
         return '0';
@@ -50,6 +54,12 @@ public class Generator {
                                            boolean includeLowercaseLetters,
                                            boolean includeSpecialCharacters,
                                            boolean includeEasyInput){
+
+
+        for(int i = 0; i < FrameContents.checkBoxes.length; i++){
+
+        s
+        }
 
         if (includeUppercaseLetters){
             return "UppercaseOnly";
@@ -70,7 +80,6 @@ public class Generator {
         }else if(includeSpecialCharacters && includeEasyInput){
             return "SpecialAndEasyOnly";
         }
-
 
         return null;
     }

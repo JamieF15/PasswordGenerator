@@ -12,7 +12,7 @@ public class FrameContents extends JPanel {
 	//contains the logic to generate password
 	public static Generator generator = new Generator();
 
-	JCheckBox[] checkBoxes;
+	public static JCheckBox[] checkBoxes;
 
 	//represents the middle of the window as it is not resizable
 	public final int MIDDLE = 200;
@@ -182,19 +182,24 @@ public class FrameContents extends JPanel {
 			//when the generate password button is clicked,
 			public void actionPerformed(ActionEvent e) {
 
-				passwordContainer.setText(null);
+				if(checkIfABoxIsChecked()) {
+					passwordContainer.setText(null);
 
-				generator.generatePassword(includeUppercaseLetters.isSelected(),
-						includeLowercaseLetters.isSelected(),
-						includeSymbols.isSelected(),
-						includeEasyInput.isSelected(),
-						(Integer) passwordLengthBox.getSelectedItem());
+					generator.generatePassword(includeUppercaseLetters.isSelected(),
+							includeLowercaseLetters.isSelected(),
+							includeSymbols.isSelected(),
+							includeEasyInput.isSelected(),
+							(Integer) passwordLengthBox.getSelectedItem());
 
-				passwordContainer.setText(generator.getPassword());
+					passwordContainer.setText(generator.getPassword());
+				}else{
+					passwordContainer.setText("Select password parameters");
+				}
 			}
 		});
 	}
 
+	//checks if any check box is checked
 	public boolean checkIfABoxIsChecked(){
 
 		for(int i = 0; i < checkBoxes.length; i++){
@@ -205,7 +210,7 @@ public class FrameContents extends JPanel {
 				return false;
 			}
 		}
-
+			return false;
 	}
 	//checks if the images for the buttons exist and sets them
 	public void checkForImage() {
