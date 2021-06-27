@@ -175,7 +175,7 @@ public class FrameContents extends JPanel {
 		includeUppercaseLetters.setSelected(true);
 		includeLowercaseLetters.setSelected(true);
 		includeSymbols.setSelected(true);
-		includeEasyInput.setSelected(true);
+		includeEasyInput.setSelected(false);
 		includeNumbers.setSelected(true);
 	}
 
