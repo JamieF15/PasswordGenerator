@@ -196,7 +196,6 @@ public class FrameContents extends JPanel {
 		//generate password button
 		generatePassword.addActionListener(new ActionListener() {
 			@Override
-
 			//when the generate password button is clicked,
 			public void actionPerformed(ActionEvent e) {
 
