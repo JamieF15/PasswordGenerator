@@ -1,3 +1,4 @@
+import java.util.HashSet;
 import java.util.Random;
 
 public class Generator {
@@ -7,126 +8,183 @@ public class Generator {
     private final char[] UPPERCASELETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
     private final char[] LOWERCASELETTERS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
     private final char[] NUMBERS = "0123456789".toCharArray();
-    private final char[] SYMBOLS = "(@?><~|+_-=#{]}{*&^%$£!)".toCharArray();
-    private final  char[] AMBIGUOUSCHARS = "lI".toCharArray();
+    private final char[] SYMBOLS = "!£$%^&*()_+-=[]{};:'@#~,.|/?".toCharArray();
+    private final char[] AMBIGUOUSCHARS = "lI".toCharArray();
 
     public static StringBuilder password = new StringBuilder();
 
+    //generates a password based on a length and its desired attributes
     public void generatePassword(int passwordLength) {
 
         //clear the string builder
         password.delete(0, password.length());
 
-        if (FrameContents.getCheckBoxes()[4].isSelected() && !passwordHasAmbiguousChar()) {
+        //switch on the determination of the password anatomy
+        switch (determinePasswordAnatomy()) {
 
-            switch (determinePasswordAnatomy()) {
+            case "Uppers":
+                assemblePassword(passwordLength, UPPERCASELETTERS);
+                break;
 
-                case "Upper":
-                    assemblePassword(passwordLength, UPPERCASELETTERS);
-                    break;
+            case "Lowers":
+                assemblePassword(passwordLength, LOWERCASELETTERS);
+                break;
 
-                case "Lower":
-                    assemblePassword(passwordLength, LOWERCASELETTERS);
-                    break;
+            case "Numbers":
+                assemblePassword(passwordLength, NUMBERS);
+                break;
 
-                case "Numbers":
-                    assemblePassword(passwordLength, NUMBERS);
-                    break;
+            case "Symbols":
+                assemblePassword(passwordLength, SYMBOLS);
+                break;
 
-                case "Symbols":
-                    assemblePassword(passwordLength, SYMBOLS);
-                    break;
+            case "SymbolsNumbers":
+                assemblePassword(passwordLength, concatenatePools(NUMBERS, SYMBOLS));
+                break;
 
-                case "UpperSymbols":
-                    assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, SYMBOLS));
-                    break;
+            case "UppersSymbols":
+                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, SYMBOLS));
+                break;
 
-                case "UpperNumbers":
-                    assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, NUMBERS));
-                    break;
+            case "UppersNumbers":
+                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, NUMBERS));
+                break;
 
-                case "LowerNumbers":
-                    assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, NUMBERS));
-                    break;
+            case "LowersNumbers":
+                assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, NUMBERS));
+                break;
 
-                case "LowerSymbols":
-                    assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, SYMBOLS));
-                    break;
+            case "LowersSymbols":
+                assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, SYMBOLS));
+                break;
 
-                case "UpperLower":
-                    assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS));
-                    break;
+            case "UppersLowers":
+                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS));
+                break;
 
-                case "UpperLowerSymbols":
-                    assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, SYMBOLS)));
-                    break;
+            case "UppersLowersSymbols":
+                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, SYMBOLS)));
+                break;
 
-                case "UpperLowerNumbers":
-                    assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, NUMBERS)));
-                    break;
+            case "UppersLowersNumbers":
+                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, NUMBERS)));
+                break;
 
-                case "LowerSymbolsNumbers":
-                    assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, concatenatePools(NUMBERS, SYMBOLS)));
-                    break;
+            case "LowersSymbolsNumbers":
+                assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, concatenatePools(NUMBERS, SYMBOLS)));
+                break;
 
-                case "UpperSymbolsNumbers":
-                    assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(SYMBOLS, NUMBERS)));
-                    break;
+            case "UppersSymbolsNumbers":
+                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(SYMBOLS, NUMBERS)));
+                break;
 
-                case "UpperLowerSymbolsNumbers":
-                    assemblePassword(passwordLength, concatenatePools(concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS),
-                            concatenatePools(NUMBERS, SYMBOLS)));
-                    break;
-            }
-        }else{
-            System.out.println("NEW");
-          //  generatePassword(passwordLength);
+            case "UppersLowersSymbolsNumbers":
+                assemblePassword(passwordLength, concatenatePools(concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS),
+                        concatenatePools(NUMBERS, SYMBOLS)));
+                break;
+        }
+
+        //if the password does not meet common criteria or the parameters set, re-generate one
+        if (!passwordIsValid()) {
+            //recur the method to generate a password
+            generatePassword(passwordLength);
         }
     }
 
-    boolean passwordHasAmbiguousChar(){
+    //checks if the password contains enough unique characters
+    boolean passwordHasEnoughUniqueChars() {
 
-        for(int i = 0; i < password.length(); i++){
+        //hashset to store the unique characters
+        HashSet uniqueChars = new HashSet();
 
-            for(int j = 0; j < AMBIGUOUSCHARS.length; j++){
+        //this formula states that the password needs to contain at least around 30% unique characters
+        double numberOfUniqueCharsNeeded = Math.ceil(password.length() / 4);
 
-                if(password.charAt(i) == AMBIGUOUSCHARS[j]){
+        //loop through the password and add each
+        for (int i = 0; i < password.length(); i++) {
 
-                    return true;
+            uniqueChars.add(password.charAt(i));
+        }
+
+        if (uniqueChars.size() >= numberOfUniqueCharsNeeded) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //checks if the password is valid based on the desired parameters
+    boolean passwordIsValid() {
+
+        if (!passwordHasAmbiguousChar() && passwordHasEnoughUniqueChars()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //checks if the password has an ambiguous char
+    boolean passwordHasAmbiguousChar() {
+
+        //check if the 'easy input' checkbox is checked
+        if (FrameContents.getCheckBoxes()[4].isSelected()) {
+
+            //loop through the password
+            for (int i = 0; i < password.length(); i++) {
+
+                //loop through the ambiguous chars array
+                for (int j = 0; j < AMBIGUOUSCHARS.length; j++) {
+
+                    //check if any element of the password has is an ambiguous char
+                    if (password.charAt(i) == AMBIGUOUSCHARS[j]) {
+
+                        return true;
+                    }
                 }
             }
         }
-        return  false;
+        return false;
     }
 
-    char[] concatenatePools(char[] pool1, char[] pool2){
+    //adds two pools of char arrays together
+    char[] concatenatePools(char[] pool1, char[] pool2) {
 
+        //the new pool of chars
         StringBuilder newPool = new StringBuilder();
+
+        //add the first pool to the new pool
         newPool.append(pool1);
+
+        //add the second pool to the new pool
         newPool.append(pool2);
+
+        //return the new pool as a char array
         return newPool.toString().toCharArray();
     }
 
-    void assemblePassword(int length, char[] charPool){
+    //assembles a password
+   private void assemblePassword(int length, char[] charPool) {
 
-        for(int i = 0; i <= length - 1; i++) {
+        for (int i = 0; i < length; i++) {
             password.append(getRandomChar(length, charPool));
         }
     }
 
-    //returns the password stringbuilder
-    public String getPassword(){
+    //returns the password stringbuilder as a string
+    public String getPassword() {
         return password.toString();
     }
 
-    //
-    int getRandomInt(int max){
+    //generates a random integer
+    int getRandomInt(int max) {
         return random.nextInt(max);
     }
 
-    char getRandomChar(int passwordLength, char[] charPool){
+    //generates a random char from a given array of chars
+    char getRandomChar(int passwordLength, char[] charPool) {
 
-        for(int i = 0; i < passwordLength - 1; i++) {
+        //generate a random char for the length of the password
+        for (int i = 0; i < passwordLength - 1; i++) {
             return charPool[getRandomInt(charPool.length)];
         }
 
@@ -134,27 +192,31 @@ public class Generator {
         return charPool[getRandomInt(charPool.length)];
     }
 
-    public String determinePasswordAnatomy(){
+    //works out the characteristics of the password to generate
+    public String determinePasswordAnatomy() {
 
+        //instantiate a string builder
         StringBuilder passwordAttributes = new StringBuilder();
 
-        for(int i = 0; i < FrameContents.getCheckBoxes().length; i++){
+        //loop through the checkboxes
+        for (int i = 0; i < FrameContents.getCheckBoxes().length; i++) {
             //0 upper
             //1 lower
             //2 easy
             //3 numbers
             //4 symbols
 
-            if(FrameContents.getCheckBoxes()[i].isSelected()){
+            //if the check box is selected, determine what one is and append it to the stringbuilder
+            if (FrameContents.getCheckBoxes()[i].isSelected()) {
 
-                switch (i){
+                switch (i) {
 
                     case 0:
-                        passwordAttributes.append("Upper");
+                        passwordAttributes.append("Uppers");
                         break;
 
                     case 1:
-                        passwordAttributes.append("Lower");
+                        passwordAttributes.append("Lowers");
                         break;
 
                     case 2:
@@ -167,6 +229,7 @@ public class Generator {
                 }
             }
         }
+        //return the password attributes
         return passwordAttributes.toString();
     }
 }
