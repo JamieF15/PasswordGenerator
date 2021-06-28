@@ -12,17 +12,20 @@ public class FrameContents extends JPanel {
 	//contains the logic to generate password
 	public static Generator generator = new Generator();
 
+	//array containing the checkboxes
 	private static JCheckBox[] checkBoxes;
+
+	//array containing the labels
 	private static JLabel[] labels;
 
 	//represents the middle of the window as it is not resizable
 	public final int MIDDLE = 200;
 
 	//the default length for a password to be generated
-	public final int DEFAULTPASSWORDLENGTH = 16;
+	private final int DEFAULTPASSWORDLENGTH = 16;
 
 	//represents the max password length
-	public final int MAXPASSWORDLENGTH = 31;
+	private final int MAXPASSWORDLENGTH = 31;
 
 	JLabel title = new JLabel("Password Generator");
 	JLabel lengthPrompt = new JLabel("Password length: ");
@@ -56,10 +59,6 @@ public class FrameContents extends JPanel {
 		addComboBoxItems();
 	}
 
-	public static JLabel[] getLabels(){
-		return  labels;
-	}
-
 	public static JCheckBox[] getCheckBoxes(){
 		return checkBoxes;
 	}
@@ -78,8 +77,10 @@ public class FrameContents extends JPanel {
 		passwordLengthBox.setSelectedItem(DEFAULTPASSWORDLENGTH);
 	}
 	
-	//sets the contents of the panel 
-	public void setPanelContents() {
+	//sets the contents of the panel
+	private void setPanelContents() {
+
+		populateArrays();
 
 		addListeners();
 
@@ -91,7 +92,7 @@ public class FrameContents extends JPanel {
 	}
 	
 	//sets the fonts for the text in the UI
-	void setFonts() {
+	private void setFonts() {
 
 		//font for the headings
 		Font headingFont = new Font ("Arial Black", Font.BOLD, 20);
@@ -100,41 +101,34 @@ public class FrameContents extends JPanel {
 		Font bodyFont = new Font ("Arial Black", Font.PLAIN, 12);
 		
 		title.setFont(headingFont);
-		lengthPrompt.setFont(bodyFont);		
-		includeUppercaseLettersPrompt.setFont(bodyFont);
-		includeLowercaseLettersPrompt.setFont(bodyFont);
-		includeSymbolsPrompt.setFont(bodyFont);
-		includeNumbersPrompt.setFont(bodyFont);
-		includeEasyInputPasswordPrompt.setFont(bodyFont);
+
+		for(int i = 0; i < labels.length; i++){
+			labels[i].setFont(bodyFont);
+		}
 	}
 
 	//adds the UI elements to the interface
-	void addItemsToPanel() {
+	private void addItemsToPanel() {
 		
 		this.add(title);
 		this.add(passwordContainer);
 		this.add(passwordLengthBox);
-		this.add(lengthPrompt);
-		this.add(includeUppercaseLetters);
-		this.add(includeUppercaseLettersPrompt);
-		this.add(includeLowercaseLetters);
-		this.add(includeLowercaseLettersPrompt);
-		this.add(includeSymbols);
-		this.add(includeSymbolsPrompt);
 		this.add(generatePassword);
 		this.add(copyPassword);
-		this.add(includeEasyInputPasswordPrompt);
-		this.add(includeEasyInput);
 		this.add(easyInputInfo);
 		this.add(questionMark);
-		this.add(includeNumbersPrompt);
-		this.add(includeNumbers);
+
+		addComponents();
+	}
+
+	//populates the arrays of components
+	private void populateArrays(){
 
 		checkBoxes = new JCheckBox[]{includeUppercaseLetters,
-									includeLowercaseLetters,
-									includeSymbols,
-									includeNumbers,
-									includeEasyInput};
+				includeLowercaseLetters,
+				includeSymbols,
+				includeNumbers,
+				includeEasyInput};
 
 		labels = new JLabel[]{lengthPrompt,
 				includeUppercaseLettersPrompt,
@@ -144,16 +138,30 @@ public class FrameContents extends JPanel {
 				includeEasyInputPasswordPrompt};
 	}
 
-	void setLabels(){
+	//adds the components from the arrays
+	private void addComponents(){
+
+		for(int i = 0; i < labels.length; i++){
+			this.add(labels[i]);
+		}
+
+		for(int i = 0; i < checkBoxes.length; i++){
+			this.add(checkBoxes[i]);
+		}
+	}
+
+	//sets the labels on the window
+	private void setLabels(){
 
 		int positionOffset = 0;
+
 		int distanceDifference = 30;
 
 		title.setBounds(30, 1, 1000, 30);
 		questionMark.setBounds(10, 205, 20, 20);
-		copyPassword.setBounds(230, 300, 30, 35);
-		passwordContainer.setBounds(30, 310, 190, 20);
-		generatePassword.setBounds(30, 275, 230, 20);
+		copyPassword.setBounds(230, 270, 30, 35);
+		passwordContainer.setBounds(30, 275, 190, 20);
+		generatePassword.setBounds(30, 245, 230, 20);
 		passwordLengthBox.setBounds(160, 55, 50, 20);
 
 		for(int i = 0; i < labels.length; i++){
@@ -180,7 +188,7 @@ public class FrameContents extends JPanel {
 	}
 
 	//adds listeners to the buttons in within UI
-	public void addListeners(){
+	private void addListeners(){
 
 		//copy password button
 		copyPassword.addActionListener(new ActionListener() {
@@ -213,18 +221,28 @@ public class FrameContents extends JPanel {
 	}
 
 	//checks if any check box is checked
-	public boolean checkIfABoxIsChecked(){
+	private boolean checkIfABoxIsChecked(){
 
 		for(int i = 0; i < checkBoxes.length; i++){
 
-			if(checkBoxes[i].isSelected()) {
+			if(checkBoxes[i].isSelected() && i != 4) {
 				return true;
 			}
 		}
 			return false;
 	}
+
+	private boolean findImage(File image){
+
+		if(image.exists()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	//checks if the images for the buttons exist and sets them
-	public void checkForImage() {
+	private void checkForImage() {
 
 		//file that represents the copy icon
 		File copyImageCheck = new File("copy.png");
@@ -232,18 +250,12 @@ public class FrameContents extends JPanel {
 		File questionMarkImageCheck = new File ("questionmark.png");
 
 		//if the file exists, print that is has been found and assign it to the button
-		if(copyImageCheck.exists()) {
-			System.out.println("Copy image found");
-			this.copyPassword.setIcon(copyIcon);
-		}else {
-			System.out.println("Copy image not found");
+		if(findImage(copyImageCheck)){
+			copyPassword.setIcon(copyIcon);
 		}
 
-		if(questionMarkImageCheck.exists()){
-			System.out.println("Question mark found");
+		if(findImage(questionMarkImageCheck)){
 			questionMark.setIcon(questionMarkIcon);
-		}else{
-			System.out.println("Question mark not found");
 		}
 	}
 }

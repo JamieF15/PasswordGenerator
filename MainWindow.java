@@ -1,22 +1,28 @@
-import java.awt.Color;
-
-
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.awt.*;
 
 public class MainWindow extends JFrame{
 
-	static Color backColour = new Color(100, 100, 200);
-	static MainWindow window = new MainWindow();
-	static FrameContents contents = new FrameContents();
-	
-	public static void main(String[] args) {
+	final TrayIcon trayIcon;
 
-        window.add(contents);               
-		window.setBounds(10, 10, 300, 400);
-		window.setVisible(true);
-		window.setResizable(false);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setBackground(backColour);
+	public  MainWindow(){
+
+		ImageIcon icon = new ImageIcon("favicon-16x16.png");
+		setBounds(200, 200, 300, 350);
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setIconImage(icon.getImage());
+
+
+
+
+	}
+
+	private void setTrayIcon(){
+
+		if(SystemTray.isSupported()){
+			SystemTray tray = SystemTray.getSystemTray();
+
+		}
 	}
 }

@@ -8,7 +8,7 @@ public class Generator {
     private final char[] UPPERCASELETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
     private final char[] LOWERCASELETTERS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
     private final char[] NUMBERS = "0123456789".toCharArray();
-    private final char[] SYMBOLS = "(@?><~|+_-=#{]}{*&^%$£!)".toCharArray();
+    private final char[] SYMBOLS = "!£$%^&*()_+-=[]{};:'@#~,.|/?".toCharArray();
     private final char[] AMBIGUOUSCHARS = "lI".toCharArray();
 
     public static StringBuilder password = new StringBuilder();
@@ -22,11 +22,11 @@ public class Generator {
         //switch on the determination of the password anatomy
         switch (determinePasswordAnatomy()) {
 
-            case "Upper":
+            case "Uppers":
                 assemblePassword(passwordLength, UPPERCASELETTERS);
                 break;
 
-            case "Lower":
+            case "Lowers":
                 assemblePassword(passwordLength, LOWERCASELETTERS);
                 break;
 
@@ -38,47 +38,47 @@ public class Generator {
                 assemblePassword(passwordLength, SYMBOLS);
                 break;
 
-            case "NumbersSymbols":
+            case "SymbolsNumbers":
                 assemblePassword(passwordLength, concatenatePools(NUMBERS, SYMBOLS));
                 break;
 
-            case "UpperSymbols":
+            case "UppersSymbols":
                 assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, SYMBOLS));
                 break;
 
-            case "UpperNumbers":
+            case "UppersNumbers":
                 assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, NUMBERS));
                 break;
 
-            case "LowerNumbers":
+            case "LowersNumbers":
                 assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, NUMBERS));
                 break;
 
-            case "LowerSymbols":
+            case "LowersSymbols":
                 assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, SYMBOLS));
                 break;
 
-            case "UpperLower":
+            case "UppersLowers":
                 assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS));
                 break;
 
-            case "UpperLowerSymbols":
+            case "UppersLowersSymbols":
                 assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, SYMBOLS)));
                 break;
 
-            case "UpperLowerNumbers":
+            case "UppersLowersNumbers":
                 assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, NUMBERS)));
                 break;
 
-            case "LowerSymbolsNumbers":
+            case "LowersSymbolsNumbers":
                 assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, concatenatePools(NUMBERS, SYMBOLS)));
                 break;
 
-            case "UpperSymbolsNumbers":
+            case "UppersSymbolsNumbers":
                 assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(SYMBOLS, NUMBERS)));
                 break;
 
-            case "UpperLowerSymbolsNumbers":
+            case "UppersLowersSymbolsNumbers":
                 assemblePassword(passwordLength, concatenatePools(concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS),
                         concatenatePools(NUMBERS, SYMBOLS)));
                 break;
@@ -86,30 +86,34 @@ public class Generator {
 
         //if the password does not meet common criteria or the parameters set, re-generate one
         if (!passwordIsValid()) {
+            //recur the method to generate a password
             generatePassword(passwordLength);
         }
     }
 
+    //checks if the password contains enough unique characters
     boolean passwordHasEnoughUniqueChars() {
 
+        //hashset to store the unique characters
         HashSet uniqueChars = new HashSet();
 
         //this formula states that the password needs to contain at least around 30% unique characters
-        double numberOfUniqueCharsNeeded = Math.ceil(password.length() / 3);
+        double numberOfUniqueCharsNeeded = Math.ceil(password.length() / 4);
 
+        //loop through the password and add each
         for (int i = 0; i < password.length(); i++) {
 
             uniqueChars.add(password.charAt(i));
         }
+
         if (uniqueChars.size() >= numberOfUniqueCharsNeeded) {
             return true;
         } else {
-            System.out.println("bad");
-            password.delete(0, password.length());
             return false;
         }
     }
 
+    //checks if the password is valid based on the desired parameters
     boolean passwordIsValid() {
 
         if (!passwordHasAmbiguousChar() && passwordHasEnoughUniqueChars()) {
@@ -138,7 +142,6 @@ public class Generator {
                     }
                 }
             }
-            // return false;
         }
         return false;
     }
@@ -160,7 +163,7 @@ public class Generator {
     }
 
     //assembles a password
-    void assemblePassword(int length, char[] charPool) {
+   private void assemblePassword(int length, char[] charPool) {
 
         for (int i = 0; i < length; i++) {
             password.append(getRandomChar(length, charPool));
@@ -209,11 +212,11 @@ public class Generator {
                 switch (i) {
 
                     case 0:
-                        passwordAttributes.append("Upper");
+                        passwordAttributes.append("Uppers");
                         break;
 
                     case 1:
-                        passwordAttributes.append("Lower");
+                        passwordAttributes.append("Lowers");
                         break;
 
                     case 2:
