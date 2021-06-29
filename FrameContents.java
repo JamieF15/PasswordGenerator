@@ -16,9 +16,6 @@ public class FrameContents extends JPanel {
 	//array containing the labels
 	private static JLabel[] labels;
 
-	//represents the middle of the window as it is not resizable
-	public final int MIDDLE = 200;
-
 	//the default length for a password to be generated
 	private static final int DEFAULTPASSWORDLENGTH = 16;
 
@@ -184,7 +181,7 @@ public class FrameContents extends JPanel {
 			positionOffset += distanceDifference;
 		}
 
-		checkForImage();
+		assignImages();
 
 		includeUppercaseLetters.setSelected(true);
 		includeLowercaseLetters.setSelected(true);
@@ -193,12 +190,14 @@ public class FrameContents extends JPanel {
 		includeNumbers.setSelected(true);
 	}
 
+	//copies the password to the clipboard
 	public static void copyPassword(){
 		StringSelection stringSelection = new StringSelection(passwordContainer.getText());
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(stringSelection, null);
 	}
 
+	//updates the text in the password container
 	public static void updateContainerText(){
 
 		if(checkIfABoxIsChecked()) {
@@ -221,18 +220,16 @@ public class FrameContents extends JPanel {
 
 		//generate password button
 		//when the generate password button is clicked,
-		generatePassword.addActionListener(e -> {
-
-			updateContainerText();
-
-		});
+		generatePassword.addActionListener(e -> updateContainerText());
 	}
 
 	//checks if any check box is checked
 	private static boolean checkIfABoxIsChecked(){
 
+		//loop through the checkbox array
 		for(int i = 0; i < checkBoxes.length; i++){
 
+			//if check if the check box is selected and is the 'easy input' one
 			if(checkBoxes[i].isSelected() && i != 4) {
 				return true;
 			}
@@ -240,17 +237,19 @@ public class FrameContents extends JPanel {
 			return false;
 	}
 
+	//finds whether a file exists and is accessible
 	private boolean findImage(File image){
 
 		return image.exists();
 	}
 
 	//checks if the images for the buttons exist and sets them
-	private void checkForImage() {
+	private void assignImages() {
 
 		//file that represents the copy icon
 		File copyImageCheck = new File("copy.png");
 
+		//file that represents the question mark icon
 		File questionMarkImageCheck = new File ("questionmark.png");
 
 		//if the file exists, print that is has been found and assign it to the button

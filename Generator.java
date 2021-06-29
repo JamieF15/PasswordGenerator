@@ -21,67 +21,21 @@ public class Generator {
 
         //switch on the determination of the password anatomy
         switch (determinePasswordAnatomy()) {
-
-            case "Uppers":
-                assemblePassword(passwordLength, UPPERCASELETTERS);
-                break;
-
-            case "Lowers":
-                assemblePassword(passwordLength, LOWERCASELETTERS);
-                break;
-
-            case "Numbers":
-                assemblePassword(passwordLength, NUMBERS);
-                break;
-
-            case "Symbols":
-                assemblePassword(passwordLength, SYMBOLS);
-                break;
-
-            case "SymbolsNumbers":
-                assemblePassword(passwordLength, concatenatePools(NUMBERS, SYMBOLS));
-                break;
-
-            case "UppersSymbols":
-                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, SYMBOLS));
-                break;
-
-            case "UppersNumbers":
-                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, NUMBERS));
-                break;
-
-            case "LowersNumbers":
-                assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, NUMBERS));
-                break;
-
-            case "LowersSymbols":
-                assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, SYMBOLS));
-                break;
-
-            case "UppersLowers":
-                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS));
-                break;
-
-            case "UppersLowersSymbols":
-                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, SYMBOLS)));
-                break;
-
-            case "UppersLowersNumbers":
-                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, NUMBERS)));
-                break;
-
-            case "LowersSymbolsNumbers":
-                assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, concatenatePools(NUMBERS, SYMBOLS)));
-                break;
-
-            case "UppersSymbolsNumbers":
-                assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(SYMBOLS, NUMBERS)));
-                break;
-
-            case "UppersLowersSymbolsNumbers":
-                assemblePassword(passwordLength, concatenatePools(concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS),
-                        concatenatePools(NUMBERS, SYMBOLS)));
-                break;
+            case "Uppers" -> assemblePassword(passwordLength, UPPERCASELETTERS);
+            case "Lowers" -> assemblePassword(passwordLength, LOWERCASELETTERS);
+            case "Numbers" -> assemblePassword(passwordLength, NUMBERS);
+            case "Symbols" -> assemblePassword(passwordLength, SYMBOLS);
+            case "SymbolsNumbers" -> assemblePassword(passwordLength, concatenatePools(NUMBERS, SYMBOLS));
+            case "UppersSymbols" -> assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, SYMBOLS));
+            case "UppersNumbers" -> assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, NUMBERS));
+            case "LowersNumbers" -> assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, NUMBERS));
+            case "LowersSymbols" -> assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, SYMBOLS));
+            case "UppersLowers" -> assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS));
+            case "UppersLowersSymbols" -> assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, SYMBOLS)));
+            case "UppersLowersNumbers" -> assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(LOWERCASELETTERS, NUMBERS)));
+            case "LowersSymbolsNumbers" -> assemblePassword(passwordLength, concatenatePools(LOWERCASELETTERS, concatenatePools(NUMBERS, SYMBOLS)));
+            case "UppersSymbolsNumbers" -> assemblePassword(passwordLength, concatenatePools(UPPERCASELETTERS, concatenatePools(SYMBOLS, NUMBERS)));
+            case "UppersLowersSymbolsNumbers" -> assemblePassword(passwordLength, concatenatePools(concatenatePools(UPPERCASELETTERS, LOWERCASELETTERS), concatenatePools(NUMBERS, SYMBOLS)));
         }
 
         //if the password does not meet common criteria or the parameters set, re-generate one
@@ -97,8 +51,8 @@ public class Generator {
         //hashset to store the unique characters
         HashSet uniqueChars = new HashSet();
 
-        //this formula states that the password needs to contain at least around 30% unique characters
-        double numberOfUniqueCharsNeeded = Math.ceil(password.length() / 4);
+        //this formula states that the password needs to contain at least around 25% unique characters
+        double numberOfUniqueCharsNeeded = Math.ceil(password.length() / 4.0);
 
         //loop through the password and add each
         for (int i = 0; i < password.length(); i++) {
@@ -106,21 +60,13 @@ public class Generator {
             uniqueChars.add(password.charAt(i));
         }
 
-        if (uniqueChars.size() >= numberOfUniqueCharsNeeded) {
-            return true;
-        } else {
-            return false;
-        }
+         return uniqueChars.size() >= numberOfUniqueCharsNeeded;
     }
 
     //checks if the password is valid based on the desired parameters
     static boolean passwordIsValid() {
 
-        if (!passwordHasAmbiguousChar() && passwordHasEnoughUniqueChars()) {
-            return true;
-        } else {
-            return false;
-        }
+        return !passwordHasAmbiguousChar() && passwordHasEnoughUniqueChars();
     }
 
     //checks if the password has an ambiguous char
@@ -133,10 +79,10 @@ public class Generator {
             for (int i = 0; i < password.length(); i++) {
 
                 //loop through the ambiguous chars array
-                for (int j = 0; j < AMBIGUOUSCHARS.length; j++) {
+                for (char ambiguousChar : AMBIGUOUSCHARS) {
 
                     //check if any element of the password has is an ambiguous char
-                    if (password.charAt(i) == AMBIGUOUSCHARS[j]) {
+                    if (password.charAt(i) == ambiguousChar) {
 
                         return true;
                     }
@@ -149,24 +95,17 @@ public class Generator {
     //adds two pools of char arrays together
     static char[] concatenatePools(char[] pool1, char[] pool2) {
 
-        //the new pool of chars
-        StringBuilder newPool = new StringBuilder();
+        //add the two pools together
+        String newPool = String.valueOf(pool1) + String.valueOf(pool2);
 
-        //add the first pool to the new pool
-        newPool.append(pool1);
-
-        //add the second pool to the new pool
-        newPool.append(pool2);
-
-        //return the new pool as a char array
-        return newPool.toString().toCharArray();
+        return newPool.toCharArray();
     }
 
     //assembles a password
    private static void assemblePassword(int length, char[] charPool) {
 
         for (int i = 0; i < length; i++) {
-            password.append(getRandomChar(length, charPool));
+            password.append(getRandomChar(charPool));
         }
     }
 
@@ -181,14 +120,9 @@ public class Generator {
     }
 
     //generates a random char from a given array of chars
-    static char getRandomChar(int passwordLength, char[] charPool) {
+    static char getRandomChar(char[] charPool) {
 
         //generate a random char for the length of the password
-        for (int i = 0; i < passwordLength - 1; i++) {
-            return charPool[getRandomInt(charPool.length)];
-        }
-
-        //fixes a bug where if a password of length 1 is selected, it returns this for some reason
         return charPool[getRandomInt(charPool.length)];
     }
 
@@ -210,22 +144,10 @@ public class Generator {
             if (FrameContents.getCheckBoxes()[i].isSelected()) {
 
                 switch (i) {
-
-                    case 0:
-                        passwordAttributes.append("Uppers");
-                        break;
-
-                    case 1:
-                        passwordAttributes.append("Lowers");
-                        break;
-
-                    case 2:
-                        passwordAttributes.append("Symbols");
-                        break;
-
-                    case 3:
-                        passwordAttributes.append("Numbers");
-                        break;
+                    case 0 -> passwordAttributes.append("Uppers");
+                    case 1 -> passwordAttributes.append("Lowers");
+                    case 2 -> passwordAttributes.append("Symbols");
+                    case 3 -> passwordAttributes.append("Numbers");
                 }
             }
         }
