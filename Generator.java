@@ -3,18 +3,18 @@ import java.util.Random;
 
 public class Generator {
 
-    Random random = new Random();
+    static Random random = new Random();
 
-    private final char[] UPPERCASELETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-    private final char[] LOWERCASELETTERS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-    private final char[] NUMBERS = "0123456789".toCharArray();
-    private final char[] SYMBOLS = "!£$%^&*()_+-=[]{};:'@#~,.|/?".toCharArray();
-    private final char[] AMBIGUOUSCHARS = "lI".toCharArray();
+    private static final char[] UPPERCASELETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private static final char[] LOWERCASELETTERS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+    private static final char[] NUMBERS = "0123456789".toCharArray();
+    private static final char[] SYMBOLS = "!£$%^&*()_+-=[]{};:'@#~,.|/?".toCharArray();
+    private static final char[] AMBIGUOUSCHARS = "lI".toCharArray();
 
     public static StringBuilder password = new StringBuilder();
 
     //generates a password based on a length and its desired attributes
-    public void generatePassword(int passwordLength) {
+    public static void generatePassword(int passwordLength) {
 
         //clear the string builder
         password.delete(0, password.length());
@@ -92,7 +92,7 @@ public class Generator {
     }
 
     //checks if the password contains enough unique characters
-    boolean passwordHasEnoughUniqueChars() {
+    static boolean passwordHasEnoughUniqueChars() {
 
         //hashset to store the unique characters
         HashSet uniqueChars = new HashSet();
@@ -114,7 +114,7 @@ public class Generator {
     }
 
     //checks if the password is valid based on the desired parameters
-    boolean passwordIsValid() {
+    static boolean passwordIsValid() {
 
         if (!passwordHasAmbiguousChar() && passwordHasEnoughUniqueChars()) {
             return true;
@@ -124,7 +124,7 @@ public class Generator {
     }
 
     //checks if the password has an ambiguous char
-    boolean passwordHasAmbiguousChar() {
+    static boolean passwordHasAmbiguousChar() {
 
         //check if the 'easy input' checkbox is checked
         if (FrameContents.getCheckBoxes()[4].isSelected()) {
@@ -147,7 +147,7 @@ public class Generator {
     }
 
     //adds two pools of char arrays together
-    char[] concatenatePools(char[] pool1, char[] pool2) {
+    static char[] concatenatePools(char[] pool1, char[] pool2) {
 
         //the new pool of chars
         StringBuilder newPool = new StringBuilder();
@@ -163,7 +163,7 @@ public class Generator {
     }
 
     //assembles a password
-   private void assemblePassword(int length, char[] charPool) {
+   private static void assemblePassword(int length, char[] charPool) {
 
         for (int i = 0; i < length; i++) {
             password.append(getRandomChar(length, charPool));
@@ -176,12 +176,12 @@ public class Generator {
     }
 
     //generates a random integer
-    int getRandomInt(int max) {
+    static int getRandomInt(int max) {
         return random.nextInt(max);
     }
 
     //generates a random char from a given array of chars
-    char getRandomChar(int passwordLength, char[] charPool) {
+    static char getRandomChar(int passwordLength, char[] charPool) {
 
         //generate a random char for the length of the password
         for (int i = 0; i < passwordLength - 1; i++) {
@@ -193,7 +193,7 @@ public class Generator {
     }
 
     //works out the characteristics of the password to generate
-    public String determinePasswordAnatomy() {
+    public static String determinePasswordAnatomy() {
 
         //instantiate a string builder
         StringBuilder passwordAttributes = new StringBuilder();

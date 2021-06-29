@@ -1,6 +1,4 @@
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.*;
 import java.awt.datatransfer.StringSelection;
@@ -22,10 +20,10 @@ public class FrameContents extends JPanel {
 	public final int MIDDLE = 200;
 
 	//the default length for a password to be generated
-	private final int DEFAULTPASSWORDLENGTH = 16;
+	private static final int DEFAULTPASSWORDLENGTH = 16;
 
 	//represents the max password length
-	private final int MAXPASSWORDLENGTH = 31;
+	private static final int MAXPASSWORDLENGTH = 31;
 
 	JLabel title = new JLabel("Password Generator");
 	JLabel lengthPrompt = new JLabel("Password length: ");
@@ -36,16 +34,16 @@ public class FrameContents extends JPanel {
 	JLabel includeNumbersPrompt = new JLabel("Include numbers: ");
 	JLabel questionMark = new JLabel();
 
-	JButton generatePassword = new JButton("Generate Password");
-	JButton copyPassword = new JButton();
-	JButton easyInputInfo = new JButton();
+	static JButton generatePassword = new JButton("Generate Password");
+	static JButton copyPassword = new JButton();
+	static JButton easyInputInfo = new JButton();
 
 	ImageIcon copyIcon = new ImageIcon("copy.png");
 	ImageIcon questionMarkIcon = new ImageIcon("questionmark.png");
 
-	JTextField passwordContainer = new JTextField();
-	
-	JComboBox<Integer> passwordLengthBox = new JComboBox<Integer>();
+	static JTextField passwordContainer = new JTextField();
+
+	static JComboBox<Integer> passwordLengthBox = new JComboBox<>();
 	
 	JCheckBox includeUppercaseLetters = new JCheckBox();	
 	JCheckBox includeLowercaseLetters = new JCheckBox();
@@ -57,6 +55,14 @@ public class FrameContents extends JPanel {
 		this.setLayout(null);
 		setPanelContents();
 		addComboBoxItems();
+	}
+
+	public static int getDEFAULTPASSWORDLENGTH(){
+		return DEFAULTPASSWORDLENGTH;
+	}
+
+	public static void setPasswordContainer(String text){
+		passwordContainer.setText(text);
 	}
 
 	public static JCheckBox[] getCheckBoxes(){
@@ -102,8 +108,8 @@ public class FrameContents extends JPanel {
 		
 		title.setFont(headingFont);
 
-		for(int i = 0; i < labels.length; i++){
-			labels[i].setFont(bodyFont);
+		for (JLabel label : labels) {
+			label.setFont(bodyFont);
 		}
 	}
 
@@ -141,12 +147,12 @@ public class FrameContents extends JPanel {
 	//adds the components from the arrays
 	private void addComponents(){
 
-		for(int i = 0; i < labels.length; i++){
-			this.add(labels[i]);
+		for (JLabel label : labels) {
+			this.add(label);
 		}
 
-		for(int i = 0; i < checkBoxes.length; i++){
-			this.add(checkBoxes[i]);
+		for (JCheckBox checkBox : checkBoxes) {
+			this.add(checkBox);
 		}
 	}
 
@@ -164,17 +170,17 @@ public class FrameContents extends JPanel {
 		generatePassword.setBounds(30, 245, 230, 20);
 		passwordLengthBox.setBounds(160, 55, 50, 20);
 
-		for(int i = 0; i < labels.length; i++){
+		for (JLabel label : labels) {
 
-			labels[i].setBounds(35, 50 + positionOffset, 1000, 30);
+			label.setBounds(35, 50 + positionOffset, 1000, 30);
 			positionOffset += distanceDifference;
 		}
 
 		positionOffset = 0;
 
-		for(int i = 0; i < checkBoxes.length; i++){
+		for (JCheckBox checkBox : checkBoxes) {
 
-			checkBoxes[i].setBounds(230, 85 + positionOffset, 20, 20);
+			checkBox.setBounds(230, 85 + positionOffset, 20, 20);
 			positionOffset += distanceDifference;
 		}
 
@@ -187,41 +193,43 @@ public class FrameContents extends JPanel {
 		includeNumbers.setSelected(true);
 	}
 
+	public static void copyPassword(){
+		StringSelection stringSelection = new StringSelection(passwordContainer.getText());
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		clipboard.setContents(stringSelection, null);
+	}
+
+	public static void updateContainerText(){
+
+		if(checkIfABoxIsChecked()) {
+			passwordContainer.setText(null);
+
+			Generator.generatePassword((Integer) passwordLengthBox.getSelectedItem());
+
+			passwordContainer.setText(generator.getPassword());
+		}else{
+			passwordContainer.setText("Select password parameters");
+		}
+	}
+
 	//adds listeners to the buttons in within UI
-	private void addListeners(){
+	public static void addListeners(){
 
 		//copy password button
-		copyPassword.addActionListener(new ActionListener() {
-			@Override
-			//when the button is clicked, copy the contents of the password container to the clipboard
-			public void actionPerformed(ActionEvent e) {
-				StringSelection stringSelection = new StringSelection(passwordContainer.getText());
-				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				clipboard.setContents(stringSelection, null);
-			}
-		});
+		//when the button is clicked, copy the contents of the password container to the clipboard
+		copyPassword.addActionListener(e -> copyPassword());
 
 		//generate password button
-		generatePassword.addActionListener(new ActionListener() {
-			@Override
-			//when the generate password button is clicked,
-			public void actionPerformed(ActionEvent e) {
+		//when the generate password button is clicked,
+		generatePassword.addActionListener(e -> {
 
-				if(checkIfABoxIsChecked()) {
-					passwordContainer.setText(null);
+			updateContainerText();
 
-					generator.generatePassword((Integer) passwordLengthBox.getSelectedItem());
-
-					passwordContainer.setText(generator.getPassword());
-				}else{
-					passwordContainer.setText("Select password parameters");
-				}
-			}
 		});
 	}
 
 	//checks if any check box is checked
-	private boolean checkIfABoxIsChecked(){
+	private static boolean checkIfABoxIsChecked(){
 
 		for(int i = 0; i < checkBoxes.length; i++){
 
@@ -234,11 +242,7 @@ public class FrameContents extends JPanel {
 
 	private boolean findImage(File image){
 
-		if(image.exists()){
-			return true;
-		}else{
-			return false;
-		}
+		return image.exists();
 	}
 
 	//checks if the images for the buttons exist and sets them
